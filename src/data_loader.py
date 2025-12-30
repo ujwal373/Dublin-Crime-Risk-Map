@@ -16,7 +16,7 @@ def detect_delimiter(file_path: str) -> str:
     Returns:
         str: Detected delimiter ('\\t' or ',')
     """
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, 'r', encoding='utf-8-sig') as f:
         first_line = f.readline()
 
     if '\t' in first_line:
@@ -66,11 +66,11 @@ def load_crime_data(file_path: str) -> pd.DataFrame:
     # Auto-detect delimiter
     delimiter = detect_delimiter(file_path)
 
-    # Load data
-    df = pd.read_csv(file_path, delimiter=delimiter, encoding='utf-8')
+    # Load data with BOM handling
+    df = pd.read_csv(file_path, delimiter=delimiter, encoding='utf-8-sig')
 
-    # Standardize column names (strip whitespace)
-    df.columns = df.columns.str.strip()
+    # Standardize column names (strip whitespace and remove BOM)
+    df.columns = df.columns.str.strip().str.replace('\ufeff', '')
 
     # Parse quarter into sortable period
     df['Quarter_Parsed'] = df['Quarter'].apply(parse_quarter)
@@ -84,9 +84,7 @@ def load_crime_data(file_path: str) -> pd.DataFrame:
     # Clean Garda Region names (strip whitespace)
     df['Garda Region'] = df['Garda Region'].str.strip()
 
-    # Filter for Dublin regions only
-    df = df[df['Garda Region'].str.contains('Dublin', case=False, na=False)]
-
+    # Load ALL regions (not filtering by Dublin only)
     # Sort by quarter
     df = df.sort_values('Quarter_Parsed')
 

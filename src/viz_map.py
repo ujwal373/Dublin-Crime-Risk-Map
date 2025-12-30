@@ -1,5 +1,5 @@
 """
-Map visualization using Folium for Dublin crime risk.
+Map visualization using Folium for Ireland crime risk.
 """
 import folium
 from folium import plugins
@@ -7,9 +7,10 @@ import pandas as pd
 import numpy as np
 
 
-# Approximate centroids for Dublin Garda regions
+# Approximate centroids for Irish Garda regions
 # These are estimated coordinates - adjust based on actual boundaries
-DUBLIN_REGION_CENTROIDS = {
+IRELAND_REGION_CENTROIDS = {
+    # Dublin Metropolitan Region (Code 10)
     '10 Dublin Metropolitan Region': (53.3498, -6.2603),
     'Dublin Metropolitan Region': (53.3498, -6.2603),
     'Dublin Metropolitan Region North': (53.3700, -6.2500),
@@ -22,6 +23,18 @@ DUBLIN_REGION_CENTROIDS = {
     'DMR Western': (53.3450, -6.3100),
     'DMR Northern': (53.3850, -6.2600),
     'DMR Southern': (53.3150, -6.2600),
+
+    # North Western Region (Code 20) - Donegal, Sligo, Leitrim
+    '20 North Western Region': (54.4500, -8.2500),
+    'North Western Region': (54.4500, -8.2500),
+
+    # Eastern Region (Code 30) - Louth, Meath, Westmeath, Cavan, Monaghan, Kildare, Wicklow
+    '30 Eastern Region': (53.6500, -7.2500),
+    'Eastern Region': (53.6500, -7.2500),
+
+    # Southern Region (Code 40) - Cork, Kerry, Limerick, Tipperary, Clare, Waterford
+    '40 Southern Region': (52.2500, -8.5000),
+    'Southern Region': (52.2500, -8.5000),
 }
 
 
@@ -36,17 +49,17 @@ def get_region_coordinates(region_name: str) -> tuple:
         (latitude, longitude) tuple
     """
     # Try exact match first
-    if region_name in DUBLIN_REGION_CENTROIDS:
-        return DUBLIN_REGION_CENTROIDS[region_name]
+    if region_name in IRELAND_REGION_CENTROIDS:
+        return IRELAND_REGION_CENTROIDS[region_name]
 
     # Try partial match (case insensitive)
     region_lower = region_name.lower()
-    for key, coords in DUBLIN_REGION_CENTROIDS.items():
+    for key, coords in IRELAND_REGION_CENTROIDS.items():
         if key.lower() in region_lower or region_lower in key.lower():
             return coords
 
-    # Default to Dublin city center
-    return (53.3498, -6.2603)
+    # Default to Ireland center
+    return (53.4129, -8.2439)
 
 
 def calculate_marker_radius(risk_score: float, min_radius: int = 300, max_radius: int = 2000) -> int:
@@ -66,9 +79,9 @@ def calculate_marker_radius(risk_score: float, min_radius: int = 300, max_radius
 
 
 def create_risk_map(zones_df: pd.DataFrame,
-                    center_lat: float = 53.3498,
-                    center_lon: float = -6.2603,
-                    zoom_start: int = 11) -> folium.Map:
+                    center_lat: float = 53.4129,
+                    center_lon: float = -8.2439,
+                    zoom_start: int = 7) -> folium.Map:
     """
     Create an interactive Folium map with risk zones.
 
@@ -171,9 +184,9 @@ def create_risk_map(zones_df: pd.DataFrame,
 
 
 def create_heatmap(zones_df: pd.DataFrame,
-                   center_lat: float = 53.3498,
-                   center_lon: float = -6.2603,
-                   zoom_start: int = 11) -> folium.Map:
+                   center_lat: float = 53.4129,
+                   center_lon: float = -8.2439,
+                   zoom_start: int = 7) -> folium.Map:
     """
     Create a heatmap visualization of crime risk.
 

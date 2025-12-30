@@ -35,33 +35,18 @@ from src.stations_optional import (
 
 # Page config
 st.set_page_config(
-    page_title="Dublin Crime Risk Visualization",
+    page_title="Ireland Crime Risk Visualization",
     page_icon="🚨",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # Title
-st.title("🚨 Dublin Crime Risk Visualization")
-st.markdown("Interactive dashboard for analyzing crime risk across Dublin Garda regions")
+st.title("🚨 Ireland Crime Risk Visualization")
+st.markdown("Interactive dashboard for analyzing crime risk across Irish Garda regions")
 
 # Sidebar
 st.sidebar.header("Configuration")
-
-# File upload
-st.sidebar.subheader("📁 Data Upload")
-uploaded_file = st.sidebar.file_uploader(
-    "Upload Crime Data (TSV/CSV)",
-    type=['csv', 'tsv', 'txt'],
-    help="Upload crime data file with columns: Statistic Label, Quarter, Garda Region, Type of Offence, UNIT, VALUE"
-)
-
-# Optional stations file
-stations_file = st.sidebar.file_uploader(
-    "Upload Stations Data (Optional)",
-    type=['csv'],
-    help="Optional: Upload stations.csv with columns: station_name, address, lat, lon, garda_region"
-)
 
 # Initialize session state
 if 'data_loaded' not in st.session_state:
@@ -69,65 +54,53 @@ if 'data_loaded' not in st.session_state:
     st.session_state.df = None
     st.session_state.stations_df = None
 
-# Load data
-if uploaded_file is not None:
-    try:
-        # Save uploaded file temporarily
-        temp_path = "temp_crime_data.csv"
-        with open(temp_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
+# Load data automatically from local file
+if not st.session_state.data_loaded:
+    crime_data_path = "crimedata.csv"
 
-        # Load and process
-        with st.spinner("Loading crime data..."):
-            df = load_crime_data(temp_path)
-            st.session_state.df = df
-            st.session_state.data_loaded = True
+    if os.path.exists(crime_data_path):
+        try:
+            with st.spinner("Loading crime data..."):
+                df = load_crime_data(crime_data_path)
+                st.session_state.df = df
+                st.session_state.data_loaded = True
 
-        # Clean up temp file
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
+                # Get basic stats
+                regions = df['Garda Region'].nunique()
+                quarters = df['Quarter'].nunique()
+                total_records = len(df)
 
-        st.sidebar.success(f"✅ Loaded {len(df)} records")
+            st.sidebar.success(f"✅ Data loaded successfully")
+            st.sidebar.info(f"📊 {total_records:,} records\n\n🗺️ {regions} regions\n\n📅 {quarters} quarters")
 
-    except Exception as e:
-        st.sidebar.error(f"Error loading data: {e}")
+        except Exception as e:
+            st.error(f"❌ Error loading crime data: {e}")
+            st.info("Please ensure 'crimedata.csv' exists in the project root directory")
+            st.stop()
+    else:
+        st.error("❌ Crime data file not found!")
+        st.info("""
+        Please ensure 'crimedata.csv' exists in the project root directory.
+
+        The file should contain columns:
+        - Statistic Label
+        - Quarter
+        - Garda Region
+        - Type of Offence
+        - UNIT
+        - VALUE
+        """)
         st.stop()
 
-# Load stations data if provided
-if stations_file is not None:
+# Optional: Load stations data if available
+stations_path = "data/sample_stations.csv"
+if os.path.exists(stations_path) and st.session_state.stations_df is None:
     try:
-        temp_stations_path = "temp_stations.csv"
-        with open(temp_stations_path, "wb") as f:
-            f.write(stations_file.getbuffer())
-
-        stations_df = load_stations_data(temp_stations_path)
+        stations_df = load_stations_data(stations_path)
         if stations_df is not None:
             st.session_state.stations_df = stations_df
-            st.sidebar.success(f"✅ Loaded {len(stations_df)} stations")
-
-        if os.path.exists(temp_stations_path):
-            os.remove(temp_stations_path)
-
     except Exception as e:
-        st.sidebar.warning(f"Could not load stations data: {e}")
-
-# Show instructions if no data loaded
-if not st.session_state.data_loaded:
-    st.info("👆 Please upload crime data file using the sidebar to begin")
-    st.markdown("""
-    ### Expected Data Format
-
-    The crime data file should contain the following columns:
-    - **Statistic Label**: Description of the statistic
-    - **Quarter**: Time period (e.g., 2023Q1)
-    - **Garda Region**: Dublin region name
-    - **Type of Offence**: Crime category
-    - **UNIT**: Measurement unit (e.g., "Number")
-    - **VALUE**: Numeric incident count
-
-    Supported formats: CSV (comma-separated) or TSV (tab-separated)
-    """)
-    st.stop()
+        pass  # Stations are optional
 
 # Main app - data is loaded
 df = st.session_state.df
