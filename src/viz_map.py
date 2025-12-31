@@ -10,31 +10,42 @@ import numpy as np
 # Approximate centroids for Irish Garda regions
 # These are estimated coordinates - adjust based on actual boundaries
 IRELAND_REGION_CENTROIDS = {
-    # Dublin Metropolitan Region (Code 10)
-    '10 Dublin Metropolitan Region': (53.3498, -6.2603),
-    'Dublin Metropolitan Region': (53.3498, -6.2603),
-    'Dublin Metropolitan Region North': (53.3700, -6.2500),
-    'Dublin Metropolitan Region South': (53.3300, -6.2600),
-    'Dublin Metropolitan Region East': (53.3500, -6.2200),
-    'Dublin Metropolitan Region West': (53.3500, -6.3000),
-    'DMR North Central': (53.3600, -6.2600),
-    'DMR South Central': (53.3300, -6.2700),
-    'DMR Eastern': (53.3450, -6.2300),
-    'DMR Western': (53.3450, -6.3100),
-    'DMR Northern': (53.3850, -6.2600),
-    'DMR Southern': (53.3150, -6.2600),
+        # Dublin Metropolitan Region (DMR)
+    "D.M.R. Eastern Garda Division": (53.3498, -6.2300),
+    "D.M.R. North Central Garda Division": (53.3600, -6.2600),
+    "D.M.R. Northern Garda Division": (53.3850, -6.2600),
+    "D.M.R. South Central Garda Division": (53.3300, -6.2700),
+    "D.M.R. Southern Garda Division": (53.3150, -6.2600),
+    "D.M.R. Western Garda Division": (53.3450, -6.3100),
 
-    # North Western Region (Code 20) - Donegal, Sligo, Leitrim
-    '20 North Western Region': (54.4500, -8.2500),
-    'North Western Region': (54.4500, -8.2500),
+    # Leinster (outside DMR)
+    "Cavan/Monaghan Garda Division": (54.0000, -7.3000),
+    "Kildare Garda Division": (53.2200, -6.6600),
+    "Kilkenny/Carlow Garda Division": (52.7200, -6.8500),
+    "Laois/Offaly Garda Division": (53.0000, -7.4000),
+    "Louth Garda Division": (53.9000, -6.5000),
+    "Meath Garda Division": (53.6500, -6.7000),
+    "Westmeath Garda Division": (53.5000, -7.3500),
+    "Wexford Garda Division": (52.4500, -6.5000),
+    "Wicklow Garda Division": (52.9800, -6.4600),
 
-    # Eastern Region (Code 30) - Louth, Meath, Westmeath, Cavan, Monaghan, Kildare, Wicklow
-    '30 Eastern Region': (53.6500, -7.2500),
-    'Eastern Region': (53.6500, -7.2500),
+    # Munster
+    "Cork City Garda Division": (51.8985, -8.4756),
+    "Cork North Garda Division": (52.0500, -8.7000),
+    "Cork West Garda Division": (51.6500, -9.2000),
+    "Kerry Garda Division": (52.1500, -9.7000),
+    "Limerick Garda Division": (52.6638, -8.6267),
+    "Tipperary Garda Division": (52.6000, -7.9000),
+    "Waterford Garda Division": (52.2593, -7.1101),
 
-    # Southern Region (Code 40) - Cork, Kerry, Limerick, Tipperary, Clare, Waterford
-    '40 Southern Region': (52.2500, -8.5000),
-    'Southern Region': (52.2500, -8.5000),
+    # Connacht
+    "Galway Garda Division": (53.2707, -9.0568),
+    "Mayo Garda Division": (53.9000, -9.3500),
+    "Roscommon/Longford Garda Division": (53.7000, -7.9000),
+
+    # North-West
+    "Donegal Garda Division": (54.8000, -8.0000),
+    "Sligo/Leitrim Garda Division": (54.2000, -8.5000),
 }
 
 
