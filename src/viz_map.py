@@ -226,17 +226,19 @@ def create_heatmap(zones_df: pd.DataFrame,
         # Weight by risk score
         heat_data.append([lat, lon, row['risk_score'] / 100])
 
-    # Add heatmap layer
+    # Add heatmap layer with strong, visible colors
     plugins.HeatMap(
         heat_data,
-        min_opacity=0.3,
-        max_zoom=13,
-        radius=25,
-        blur=30,
+        min_opacity=0.6,
+        max_zoom=18,
+        radius=30,
+        blur=25,
         gradient={
-            0.0: '#1a9850',
-            0.5: '#fee08b',
-            1.0: '#d73027'
+            0.0: '#0d47a1',    # Dark blue (low risk)
+            0.3: '#5e35b1',    # Deep purple
+            0.5: '#e53935',    # Strong red
+            0.7: '#ff6f00',    # Dark orange
+            1.0: '#ffeb3b'     # Bright yellow (high risk)
         }
     ).add_to(m)
 
