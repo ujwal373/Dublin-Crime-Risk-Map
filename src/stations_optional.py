@@ -158,11 +158,11 @@ def add_station_clusters_to_map(m: folium.Map,
               'darkpurple', 'white', 'pink', 'lightblue', 'lightgreen']
 
     for cluster_id in clusters:
-        cluster_stations = stations_df[stations_df['cluster'] == cluster_id]
+        stations_in_cluster = stations_df[stations_df['cluster'] == cluster_id]
 
         # Calculate cluster centroid
-        centroid_lat = cluster_stations['lat'].mean()
-        centroid_lon = cluster_stations['lon'].mean()
+        centroid_lat = stations_in_cluster['lat'].mean()
+        centroid_lon = stations_in_cluster['lon'].mean()
 
         color = colors[int(cluster_id) % len(colors)]
 
@@ -170,7 +170,7 @@ def add_station_clusters_to_map(m: folium.Map,
         folium.CircleMarker(
             location=[centroid_lat, centroid_lon],
             radius=15,
-            popup=f'Cluster {cluster_id}<br>{len(cluster_stations)} stations',
+            popup=f'Cluster {cluster_id}<br>{len(stations_in_cluster)} stations',
             color=color,
             fill=True,
             fillColor=color,
@@ -178,7 +178,7 @@ def add_station_clusters_to_map(m: folium.Map,
         ).add_to(m)
 
         # Add markers for individual stations in cluster
-        for idx, station in cluster_stations.iterrows():
+        for idx, station in stations_in_cluster.iterrows():
             folium.CircleMarker(
                 location=[station['lat'], station['lon']],
                 radius=5,
